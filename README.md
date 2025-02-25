@@ -1,32 +1,3 @@
-<think>
-I'll create a fun, humanized, and friendly README.md for this RAG Assistant app. Based on the code, it's a Streamlit application that combines retrieval-augmented generation (RAG) with web scraping and PDF analysis capabilities.
-
-Key features I should highlight in an accessible way:
-- Chat with an AI assistant that can access custom knowledge
-- Add web content via URLs
-- Upload PDF documents
-- The assistant remembers conversation history
-- It intelligently searches through your added content
-
-Since the request is for a non-technical, American-style, fun README, I'll:
-1. Use casual, conversational language
-2. Include some American colloquialisms/expressions
-3. Focus on what the app does rather than how it works
-4. Add a touch of humor and excitement
-5. Make it visually appealing with emojis and formatting
-6. Include simple setup instructions without technical jargon
-7. Emphasize the benefits and cool use cases
-
-I'll structure it with:
-- A catchy title
-- Quick intro/tagline
-- What it does (in simple terms)
-- Cool features
-- How to use it
-- Simple setup instructions
-- Example use cases
-</think>
-
 # 🔍 Agentic RAG Assistant - Your Super-Smart AI Buddy!
 
 ## The AI that actually knows what you're talking about!
