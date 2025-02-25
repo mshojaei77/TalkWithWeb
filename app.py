@@ -30,10 +30,8 @@ if "initialized" not in st.session_state:
 
 # Initialize OpenAI client
 @st.cache_resource
-def get_openai_client():
-    return OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-client = get_openai_client()
+def get_openai_client(api_key):
+    return OpenAI(api_key=api_key)
 
 # Initialize FAISS index and document store
 embedding_size = 1536  # OpenAI embedding dimension
@@ -118,8 +116,12 @@ def save_to_markdown(content, url):
 # Batch embedding function - much faster than one-by-one
 @st.cache_data(ttl=3600)
 def get_embeddings_batch(texts):
+    if not st.session_state.client:
+        st.error("OpenAI API key is required")
+        return []
+        
     with st.spinner("Generating text embeddings in batch..."):
-        response = client.embeddings.create(
+        response = st.session_state.client.embeddings.create(
             input=texts,
             model="text-embedding-3-small"
         )
@@ -245,6 +247,10 @@ def search_knowledge_base_tool(query, index, document_store, k=5):
 
 # Process user input with function calling
 def process_user_input(user_input, urls, index, document_store):
+    if not st.session_state.client:
+        st.error("OpenAI API key is required")
+        return "Please provide an OpenAI API key in the sidebar to continue.", []
+    
     # Define the function for RAG search
     tools = [
         {
@@ -345,7 +351,7 @@ def process_user_input(user_input, urls, index, document_store):
         # For document queries, use tool_choice="required" to force RAG search
         if is_document_query and index.ntotal > 0:
             with st.spinner("Analyzing your question about documents..."):
-                response = client.chat.completions.create(
+                response = st.session_state.client.chat.completions.create(
                     model=st.session_state.model_name,
                     messages=messages,
                     tools=tools,
@@ -354,7 +360,7 @@ def process_user_input(user_input, urls, index, document_store):
         else:
             # For other queries, let the model decide
             with st.spinner("Processing your question..."):
-                response = client.chat.completions.create(
+                response = st.session_state.client.chat.completions.create(
                     model=st.session_state.model_name,
                     messages=messages,
                     tools=tools if index.ntotal > 0 else None,
@@ -398,7 +404,7 @@ def process_user_input(user_input, urls, index, document_store):
             
             # Get final response with the RAG context
             with st.spinner("Generating response based on retrieved information..."):
-                final_response = client.chat.completions.create(
+                final_response = st.session_state.client.chat.completions.create(
                     model=st.session_state.model_name,
                     messages=messages,
                     temperature=st.session_state.temperature
@@ -464,19 +470,21 @@ def main():
             help="Enter your OpenAI API key to use the assistant"
         )
         
-        # Update the API key in session state and reinitialize client if changed
+        # Update the API key in session state
         if api_key != st.session_state.openai_api_key:
             st.session_state.openai_api_key = api_key
-            # Update the client with the new API key
             if api_key:
-                # Clear the cached client to force recreation
-                st.cache_resource.clear()
-                # Set the global client with the new key
-                global client
-                client = OpenAI(api_key=api_key)
                 st.success("API key updated!")
             else:
                 st.warning("Please enter an OpenAI API key to use the assistant")
+        
+        # Initialize client only when we have an API key
+        if st.session_state.openai_api_key:
+            client = get_openai_client(st.session_state.openai_api_key)
+            st.session_state.client = client
+        else:
+            st.error("Please provide an OpenAI API key to use this application")
+            st.session_state.client = None
         
         st.metric("Vectors", index.ntotal)
         
