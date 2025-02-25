@@ -1,0 +1,12 @@
+openai
+requests
+beautifulsoup4
+python-dotenv
+streamlit
+playwright
+pandas
+langchain
+aiohttp
+matplotlib
+PyPDF2
+faiss-cpu

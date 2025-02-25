@@ -1,0 +1,78 @@
+# Python bytecode and cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Project-specific data files
+*.faiss
+*.pkl
+*.md
+document_store.pkl
+embeddings.faiss
+scraped_*.md
+pdf_*.md
+
+# Log files
+*.log
+logs/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+.spyderproject
+.spyproject
+.ropeproject
+.ipynb_checkpoints/
+
+# OS specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Large model files
+*.onnx
+*.pt
+*.bin
+*.model
+
+# API key files (beyond .env)
+*_key.txt
+credentials.json
+secrets.yaml
