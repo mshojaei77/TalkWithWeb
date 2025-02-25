@@ -443,6 +443,41 @@ def main():
     # Display stats in sidebar
     with st.sidebar:
         st.title("Knowledge Base")
+        
+        # Add OpenAI API key input
+        st.markdown("---")
+        st.subheader("API Settings")
+        
+        # Initialize API key in session state if not present
+        if "openai_api_key" not in st.session_state:
+            # Try to get from environment first
+            st.session_state.openai_api_key = os.getenv("OPENAI_API_KEY", "")
+        
+        # Security notice about API key
+        st.info("🔒 Your API key is only stored temporarily in your browser session and is not saved on any server or database.", icon="ℹ️")
+        
+        # API key input with password masking
+        api_key = st.text_input(
+            "OpenAI API Key",
+            value=st.session_state.openai_api_key,
+            type="password",
+            help="Enter your OpenAI API key to use the assistant"
+        )
+        
+        # Update the API key in session state and reinitialize client if changed
+        if api_key != st.session_state.openai_api_key:
+            st.session_state.openai_api_key = api_key
+            # Update the client with the new API key
+            if api_key:
+                # Clear the cached client to force recreation
+                st.cache_resource.clear()
+                # Set the global client with the new key
+                global client
+                client = OpenAI(api_key=api_key)
+                st.success("API key updated!")
+            else:
+                st.warning("Please enter an OpenAI API key to use the assistant")
+        
         st.metric("Vectors", index.ntotal)
         
         # Model selection dropdown
